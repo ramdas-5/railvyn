@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# next
+.next/
+out/
+next-env.d.ts
+
+# local embedded postgres data
+.data/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# tests
+coverage/
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# misc
+.DS_Store
+*.log
+*.tsbuildinfo

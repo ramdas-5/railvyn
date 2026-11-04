@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body { @apply bg-bg text-slate-100 antialiased; }
+.card { @apply rounded-2xl border border-line bg-panel/90 p-4; }
+.hatch { background: repeating-linear-gradient(45deg,#e5b93c 0 3px,#6b5a1c 3px 6px); }
+::-webkit-scrollbar { height: 6px; width: 6px; }
+::-webkit-scrollbar-thumb { background: #1d2823; border-radius: 9px; }

@@ -1,0 +1,181 @@
+@import "tailwindcss";
+
+/*
+ * RAILVYN design tokens — see DESIGN.md.
+ * Components must use these semantic tokens, never one-off colour values.
+ */
+@theme {
+  --color-canvas: #080a09;
+  --color-raised: #191c1a;
+  --color-panel: #f7f8f3;
+  --color-subtle: #e9ece5;
+  --color-ink: #161a17;
+  --color-ink-muted: #48534b;
+  --color-fg: #f6f7f2;
+  --color-fg-muted: #ccd2cc;
+  --color-line: #343b36;
+  --color-line-light: #cfd6cd;
+  --color-accent: #daf28f;
+  --color-accent-ink: #263416;
+  --color-warning: #ffe4ae;
+  --color-warning-ink: #5a3b00;
+  --color-danger: #f9ccbf;
+  --color-danger-ink: #5f1b0b;
+  --color-success: #d8edc8;
+  --color-success-ink: #1e3a12;
+  --color-rail: #6f7d72;
+
+  --radius-chip: 10px;
+  --radius-small: 16px;
+  --radius-card: 24px;
+  --radius-feature: 30px;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .rv-panel {
+    border-radius: var(--radius-card);
+    border: 1px solid color-mix(in srgb, var(--color-line-light) 75%, transparent);
+    background-color: var(--color-panel);
+    color: var(--color-ink);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.35) inset;
+  }
+
+  .rv-feature {
+    border-radius: var(--radius-feature);
+    border: 1px solid color-mix(in srgb, var(--color-line-light) 65%, transparent);
+    background-color: var(--color-panel);
+    color: var(--color-ink);
+  }
+
+  .rv-inset {
+    border-radius: var(--radius-small);
+    border: 1px solid color-mix(in srgb, var(--color-line-light) 80%, transparent);
+    background-color: color-mix(in srgb, var(--color-subtle) 55%, white);
+    color: var(--color-ink);
+  }
+
+  .rv-dark-panel {
+    border-radius: var(--radius-card);
+    border: 1px solid var(--color-line);
+    background-color: var(--color-raised);
+    color: var(--color-fg);
+  }
+
+  .rv-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+  }
+
+  .rv-label-dark {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-fg-muted);
+  }
+
+  .rv-scroll {
+    overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-line-light) transparent;
+  }
+
+  .rv-hatch {
+    background-image: repeating-linear-gradient(
+      135deg,
+      rgba(90, 59, 0, 0.22) 0 2px,
+      transparent 2px 6px
+    );
+  }
+
+  .rv-mono {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  .rv-rail-line {
+    background-image: linear-gradient(
+      to right,
+      var(--color-line-light) 0 6px,
+      transparent 6px 12px
+    );
+    background-size: 12px 2px;
+    background-repeat: repeat-x;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .sr-only-focusable:not(:focus) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "seat_holds" ADD COLUMN "passenger_draft" jsonb;

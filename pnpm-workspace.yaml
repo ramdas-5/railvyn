@@ -1,0 +1,19 @@
+packages:
+  - "."
+
+# This project pins exact versions in package.json; the supply-chain age gate is
+# disabled so a fresh install can resolve the pinned, already-installed versions.
+minimumReleaseAge: 0
+
+# pnpm 10+/12: dependency lifecycle scripts are blocked unless allowed here.
+allowBuilds:
+  '@embedded-postgres/windows-x64': true
+  embedded-postgres: true
+  esbuild: true
+
+onlyBuiltDependencies:
+  - "@embedded-postgres/windows-x64"
+  - embedded-postgres
+  - esbuild
+  - sharp
+  - unrs-resolver
