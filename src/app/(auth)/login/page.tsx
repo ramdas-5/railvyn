@@ -15,7 +15,11 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string }>;
 }) {
   const session = await getSessionUser();
-  if (session) redirect("/dashboard");
+  if (session) {
+    redirect(
+      session.isAdmin ? "/admin" : session.isOperator ? "/operator" : "/dashboard",
+    );
+  }
   const params = await searchParams;
 
   return (

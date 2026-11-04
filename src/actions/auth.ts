@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/db";
 import { user } from "@/db/schema";
-import { getAuth } from "@/lib/auth";
+import { getAuth, getUserRoles } from "@/lib/auth";
 import { requireUser } from "@/lib/permissions";
 import { writeAudit } from "@/lib/domain/audit";
 import { ValidationError } from "@/lib/errors";
@@ -80,16 +80,25 @@ export async function signInAction(
   });
   if (!parsed.success) return zodActionError(parsed.error);
 
+  let landing = "/dashboard";
   try {
-    await getAuth().api.signInEmail({
+    const result = await getAuth().api.signInEmail({
       body: { email: parsed.data.email, password: parsed.data.password },
     });
+    // Staff sign-ins land on their own portal instead of the passenger
+    // dashboard. Roles are read from role_assignments on the server.
+    const roles = await getUserRoles(result.user.id);
+    landing = roles.includes("admin")
+      ? "/admin"
+      : roles.includes("operator")
+        ? "/operator"
+        : "/dashboard";
   } catch (error) {
     return { status: "error", message: authFailureMessage(error) };
   }
 
   revalidatePath("/", "layout");
-  redirect(safeNext(parsed.data.next));
+  redirect(parsed.data.next ? safeNext(parsed.data.next) : landing);
 }
 
 export async function signOutAction(): Promise<void> {

@@ -1,33 +1,36 @@
 -- ===========================================================================
 -- RAILVYN — one-file Neon PostgreSQL setup
 --
--- Run this ENTIRE file once in the Neon SQL Editor on an EMPTY database
--- (Neon Console -> your project -> SQL Editor -> paste -> Run).
+-- RUN IT: Neon Console -> SQL Editor -> paste this whole file -> click "Run".
+-- Do not click "Explain": EXPLAIN can only describe a single query and wraps
+-- the script in one EXPLAIN, which fails on DDL/transaction statements (the
+-- earlier "syntax error at or near \"set\"" came from that mode).
 --
--- It does two things in order:
---   PART 1  creates the complete schema (enums, tables, indexes, constraints)
---   PART 2  inserts the deterministic demonstration data and resets app tables
+-- RE-RUNNABLE: Part 1 drops and recreates the public schema, deleting every
+-- table in the public schema of the target database. Use a dedicated
+-- demonstration database, never a database with data you want to keep.
 --
--- WARNING: PART 2 starts with TRUNCATE ... CASCADE. It is intended for a fresh
--- demo database and will erase existing RAILVYN application rows.
---
--- This is an independent educational demo. It is not IRCTC or Indian Railways,
--- issues no official PNR, and uses simulated payments only. All train, station
--- and booking data below is synthetic.
+-- PART 1 — schema: enums, tables, foreign keys, indexes, constraints
+-- PART 2 — deterministic demo data: 63 stations, 16 routes, 30 trains,
+--          300 runs, 59,700 seats, 100 bookings, waitlist + audit samples
 --
 -- Demo accounts (password for every seeded account: RailvynDemo#2026)
---   passenger@railvyn.demo   priya@railvyn.demo    kabir@railvyn.demo
---   operator@railvyn.demo    operator2@railvyn.demo
+--   passenger@railvyn.demo    priya@railvyn.demo     kabir@railvyn.demo
+--   operator@railvyn.demo     operator2@railvyn.demo
 --   admin@railvyn.demo
 --
--- After running: set NEON_DATABASE_URL (pooled host) and BETTER_AUTH_SECRET in
--- your environment, then start the app. Do not run Drizzle migrations on this
--- database afterwards; choose either this file or the migrations workflow.
+-- After running: set NEON_DATABASE_URL (pooled connection string) and
+-- BETTER_AUTH_SECRET, restart the app, then sign in as admin@railvyn.demo or
+-- operator@railvyn.demo to reach the /admin and /operator portals.
 --
--- File is ~7.3 MiB. If the Neon SQL editor rejects the size, run it from a
--- terminal instead: psql "$NEON_DATABASE_URL" -f railvyn-neon-setup.sql
+-- Independent educational demo. Not IRCTC or Indian Railways, no official PNR,
+-- simulated payments only. All train, station and booking data is synthetic.
+--
+-- File is ~7.3 MiB. If the SQL editor refuses it, apply Part 2 only with
+-- `pnpm db:seed` (uses NEON_DATABASE_URL), or use
+-- psql "$NEON_DATABASE_URL" -f railvyn-neon-setup.sql.
+-- Do not also run Drizzle migrations on this database.
 -- ===========================================================================
-
 
 -- ===========================================================================
 -- PART 1 — SCHEMA
@@ -40,10 +43,17 @@
 -- choose either versioned Drizzle migrations OR these SQL files for a fresh DB.
 -- Apply: psql "$NEON_DATABASE_URL" -f db/fullschema.sql
 -- Then:  psql "$NEON_DATABASE_URL" -f db/seed.sql
+--
+-- This script is re-runnable and safe to paste into the Neon SQL Editor: it
+-- drops and recreates the public schema first. That deletes every table in the
+-- public schema of the target database, so only use it on a demo database.
+-- It contains no psql-only meta-commands and no SET statements, so "Run" works
+-- in the Neon SQL Editor ("Explain" cannot execute DDL and will report an
+-- error for any multi-statement script).
 -- ---------------------------------------------------------------------------
 
-set client_encoding to 'UTF8';
-set search_path to public;
+drop schema if exists public cascade;
+create schema public;
 
 CREATE TYPE "public"."app_role" AS ENUM('passenger', 'operator', 'admin');
 CREATE TYPE "public"."berth_type" AS ENUM('lower', 'middle', 'upper', 'side_lower', 'side_upper', 'seat');
@@ -437,7 +447,6 @@ CREATE INDEX "waitlist_run_queue_idx" ON "waitlist_entries" USING btree ("run_id
 CREATE INDEX "waitlist_user_idx" ON "waitlist_entries" USING btree ("user_id");
 ALTER TABLE "seat_holds" ADD COLUMN "passenger_draft" jsonb;
 
-
 -- ===========================================================================
 -- PART 2 — DEMONSTRATION DATA
 -- ===========================================================================
@@ -479,9 +488,6 @@ ALTER TABLE "seat_holds" ADD COLUMN "passenger_draft" jsonb;
 --   audit_logs: 20
 --   app_settings: 5
 -- ---------------------------------------------------------------------------
-
-set client_encoding to 'UTF8';
-set search_path to public;
 
 begin;
 

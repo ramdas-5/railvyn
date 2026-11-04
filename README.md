@@ -86,7 +86,7 @@ pnpm db:seed        # demo data only
 
 ### One-file SQL setup (Neon SQL Editor)
 
-[`railvyn-neon-setup.sql`](railvyn-neon-setup.sql) in the repository root contains the complete schema (Part 1) followed by the deterministic demo seed (Part 2). Paste and run the whole file once in the Neon SQL Editor on an empty database, then set `NEON_DATABASE_URL`. Part 2 truncates application tables, so only run it on a demo database. The file is about 7.3 MiB; if the SQL editor rejects it, run `psql "$NEON_DATABASE_URL" -f railvyn-neon-setup.sql` instead. Choose either this file or `pnpm db:migrate` — do not apply both to the same database.
+[`railvyn-neon-setup.sql`](railvyn-neon-setup.sql) in the repository root contains the complete schema (Part 1) followed by the deterministic demo seed (Part 2). Paste the whole file into the Neon SQL Editor and click **Run** (not *Explain*, which cannot execute a multi-statement script), then set `NEON_DATABASE_URL`. The file is re-runnable: Part 1 drops and recreates the `public` schema, so every table in that schema is deleted first — use a dedicated demo database. It is about 7.3 MiB; if the SQL editor rejects it, run `pnpm db:seed` (Part 2 only) or `psql "$NEON_DATABASE_URL" -f railvyn-neon-setup.sql`. Choose either this file or `pnpm db:migrate` — do not apply both to the same database. Regenerate it with `pnpm db:sql:bundle` after changing `db/fullschema.sql` or `db/seed.sql`.
 
 Public pages can render without a database, but search, booking, operator and admin features require a configured, migrated database. They fail with an explicit error rather than faking data.
 

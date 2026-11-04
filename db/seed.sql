@@ -36,9 +36,6 @@
 --   app_settings: 5
 -- ---------------------------------------------------------------------------
 
-set client_encoding to 'UTF8';
-set search_path to public;
-
 begin;
 
 truncate table

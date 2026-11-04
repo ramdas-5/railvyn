@@ -5,10 +5,17 @@
 -- choose either versioned Drizzle migrations OR these SQL files for a fresh DB.
 -- Apply: psql "$NEON_DATABASE_URL" -f db/fullschema.sql
 -- Then:  psql "$NEON_DATABASE_URL" -f db/seed.sql
+--
+-- This script is re-runnable and safe to paste into the Neon SQL Editor: it
+-- drops and recreates the public schema first. That deletes every table in the
+-- public schema of the target database, so only use it on a demo database.
+-- It contains no psql-only meta-commands and no SET statements, so "Run" works
+-- in the Neon SQL Editor ("Explain" cannot execute DDL and will report an
+-- error for any multi-statement script).
 -- ---------------------------------------------------------------------------
 
-set client_encoding to 'UTF8';
-set search_path to public;
+drop schema if exists public cascade;
+create schema public;
 
 CREATE TYPE "public"."app_role" AS ENUM('passenger', 'operator', 'admin');
 CREATE TYPE "public"."berth_type" AS ENUM('lower', 'middle', 'upper', 'side_lower', 'side_upper', 'seat');

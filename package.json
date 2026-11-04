@@ -22,6 +22,7 @@
     "db:seed": "tsx scripts/seed.ts",
     "db:setup": "pnpm db:migrate && pnpm db:seed",
     "db:sql:export": "tsx scripts/export-seed-sql.ts",
+    "db:sql:bundle": "tsx scripts/build-neon-setup.ts",
     "db:sql:verify": "tsx scripts/verify-sql-files.ts"
   },
   "dependencies": {

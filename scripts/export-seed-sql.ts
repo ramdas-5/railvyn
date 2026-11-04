@@ -171,9 +171,6 @@ async function main() {
 ${summary}
 -- ---------------------------------------------------------------------------
 
-set client_encoding to 'UTF8';
-set search_path to public;
-
 begin;
 
 truncate table
