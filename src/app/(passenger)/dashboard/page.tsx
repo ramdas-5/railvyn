@@ -8,7 +8,7 @@ import {
   Ticket,
   TrainFront,
 } from "lucide-react";
-import { requireUser } from "@/lib/permissions";
+import { requireUserPage } from "@/lib/page-auth";
 import { listUserBookings } from "@/lib/domain/reservations";
 import { listWaitlistForUser } from "@/lib/domain/waitlist";
 import { formatDate, formatTime, msRemaining } from "@/lib/datetime";
@@ -21,7 +21,7 @@ export const metadata: Metadata = { title: "Passenger dashboard" };
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const user = await requireUser();
+  const user = await requireUserPage("/dashboard");
   const [bookings, waitlists] = await Promise.all([
     listUserBookings(user.id),
     listWaitlistForUser(user.id),

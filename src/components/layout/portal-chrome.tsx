@@ -26,6 +26,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { activeNavigationHref, primaryNavigation } from "@/lib/navigation";
 import { signOutAction } from "@/actions/auth";
 import { Badge } from "@/components/ui/surfaces";
 import { Wordmark } from "./wordmark";
@@ -57,6 +58,7 @@ const NAV: Record<
   ],
   admin: [
     { href: "/admin", label: "System overview", icon: LayoutDashboard },
+    { href: "/admin/bookings", label: "Booking registry", icon: TicketCheck },
     { href: "/admin/network", label: "Network", icon: Map },
     { href: "/admin/trains", label: "Trains", icon: TrainFront },
     { href: "/admin/runs", label: "Schedules & runs", icon: CalendarClock },
@@ -79,6 +81,85 @@ const Portal_Home: Record<Portal, string> = {
   operator: "/operator",
   admin: "/admin",
 };
+
+type CrossLink = {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" }>;
+  requires?: "operator" | "admin";
+};
+
+const CROSS_LINKS: Record<Portal, CrossLink[]> = {
+  passenger: [
+    { href: "/search", label: "Search & book", icon: Search },
+    { href: "/operator", label: "Operations console", icon: Gauge, requires: "operator" },
+    { href: "/admin/bookings", label: "Booking registry", icon: TicketCheck, requires: "admin" },
+    { href: "/admin", label: "Administration", icon: SlidersHorizontal, requires: "admin" },
+  ],
+  operator: [
+    { href: "/search", label: "Search & book", icon: Search },
+    { href: "/admin/bookings", label: "Booking registry", icon: TicketCheck, requires: "admin" },
+    { href: "/admin", label: "Administration", icon: SlidersHorizontal, requires: "admin" },
+  ],
+  admin: [
+    { href: "/search", label: "Search & book", icon: Search },
+    { href: "/operator", label: "Operations console", icon: Gauge },
+  ],
+};
+
+function CrossLinks({
+  portal,
+  pathname,
+  isAdmin,
+  isOperator,
+  onNavigate,
+}: {
+  portal: Portal;
+  pathname: string;
+  isAdmin: boolean;
+  isOperator: boolean;
+  onNavigate?: () => void;
+}) {
+  const inPortal = new Set(NAV[portal].map((item) => item.href));
+  const links = CROSS_LINKS[portal].filter(
+    (item) =>
+      !inPortal.has(item.href) &&
+      (!item.requires || (item.requires === "admin" ? isAdmin : isOperator)),
+  );
+  if (links.length === 0) return null;
+  const activeHref = activeNavigationHref(pathname, links);
+
+  return (
+    <div className="mt-5 border-t border-line/70 pt-4">
+      <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-[0.14em] text-fg-muted">
+        Also available
+      </p>
+      <nav aria-label="Related workspaces" className="space-y-1">
+        {links.map((item) => {
+          const Icon = item.icon;
+          const active = activeHref === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onNavigate}
+              aria-current={active ? "page" : undefined}
+              className={cn(
+                "flex min-h-11 items-center gap-3 rounded-chip border border-transparent px-3 py-2.5 text-sm transition-colors",
+                active
+                  ? "bg-white/5 font-semibold text-fg"
+                  : "text-fg-muted hover:border-line hover:bg-white/5 hover:text-fg",
+              )}
+            >
+              <Icon aria-hidden="true" className="h-4 w-4 text-fg-muted" />
+              <span className="flex-1">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
+  );
+}
 
 function NavList({
   portal,
@@ -122,7 +203,7 @@ function NavList({
   );
 }
 
-function UserCard({ user, portal }: { user: PortalUser; portal: Portal }) {
+function UserCard({ user }: { user: PortalUser }) {
   return (
     <div className="rounded-small border border-line bg-canvas/50 p-3">
       <p className="truncate text-sm font-semibold text-fg">{user.name}</p>
@@ -146,14 +227,12 @@ function UserCard({ user, portal }: { user: PortalUser; portal: Portal }) {
           Sign out
         </button>
       </form>
-      {portal === "passenger" ? (
-        <Link
-          href="/"
-          className="mt-2 block text-xs text-fg-muted underline underline-offset-2 hover:text-fg"
-        >
-          Back to public site
-        </Link>
-      ) : null}
+      <Link
+        href="/"
+        className="mt-2 block text-xs text-fg-muted underline underline-offset-2 hover:text-fg"
+      >
+        Back to public site
+      </Link>
     </div>
   );
 }
@@ -161,6 +240,10 @@ function UserCard({ user, portal }: { user: PortalUser; portal: Portal }) {
 export function PortalChrome({ portal, user }: { portal: Portal; user: PortalUser }) {
   const pathname = usePathname();
   const [open, setOpen] = React.useState(false);
+  const isAdmin = user.roles.includes("admin");
+  const isOperator = isAdmin || user.roles.includes("operator");
+  const primaryLinks = primaryNavigation({ isAdmin, isOperator });
+  const activePrimary = activeNavigationHref(pathname, primaryLinks);
 
   return (
     <>
@@ -173,29 +256,69 @@ export function PortalChrome({ portal, user }: { portal: Portal; user: PortalUse
             {portal === "passenger" ? "Passenger" : portal === "operator" ? "Operations" : "Administration"}
           </p>
           <NavList portal={portal} pathname={pathname} />
+          <CrossLinks
+            portal={portal}
+            pathname={pathname}
+            isAdmin={isAdmin}
+            isOperator={isOperator}
+          />
         </div>
         <div className="mt-4">
-          <UserCard user={user} portal={portal} />
+          <UserCard user={user} />
           <p className="mt-3 px-1 text-[10px] leading-relaxed text-fg-muted/70">
             Demonstration system. No official railway data or real payments.
           </p>
         </div>
       </aside>
 
-      <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-line bg-raised/95 px-4 py-3 backdrop-blur lg:hidden">
-        <Link href="/" aria-label="RAILVYN home">
-          <Wordmark compact />
-        </Link>
-        <button
-          type="button"
-          onClick={() => setOpen(true)}
-          aria-label="Open navigation menu"
-          aria-expanded={open}
-          className="grid h-11 w-11 place-items-center rounded-chip border border-line text-fg"
-        >
-          <Menu aria-hidden="true" className="h-5 w-5" />
-        </button>
-      </header>
+      {/*
+        The same primary row stays pinned on every portal page, at every
+        breakpoint: Search trains, the dashboard, the booking registry and the
+        operations console never disappear behind a route change.
+      */}
+      <div className="sticky top-0 z-30 border-b border-line bg-raised/95 backdrop-blur">
+        <div className="flex items-center gap-2 px-3 py-2 sm:px-5">
+          <Link
+            href="/"
+            aria-label="RAILVYN home"
+            className="shrink-0 lg:hidden"
+          >
+            <Wordmark compact />
+          </Link>
+          <nav
+            aria-label="Primary"
+            className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto text-sm lg:pl-2"
+          >
+            {primaryLinks.map((link) => {
+              const active = activePrimary === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  className={cn(
+                    "whitespace-nowrap rounded-chip px-3 py-2 transition-colors",
+                    active
+                      ? "bg-accent/15 font-semibold text-fg"
+                      : "text-fg-muted hover:bg-white/5 hover:text-fg",
+                  )}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
+          </nav>
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            aria-label="Open navigation menu"
+            aria-expanded={open}
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-chip border border-line text-fg lg:hidden"
+          >
+            <Menu aria-hidden="true" className="h-5 w-5" />
+          </button>
+        </div>
+      </div>
 
       {open ? (
         <div className="fixed inset-0 z-40 lg:hidden">
@@ -224,9 +347,16 @@ export function PortalChrome({ portal, user }: { portal: Portal; user: PortalUse
             </div>
             <div className="mt-6">
               <NavList portal={portal} pathname={pathname} onNavigate={() => setOpen(false)} />
+              <CrossLinks
+                portal={portal}
+                pathname={pathname}
+                isAdmin={isAdmin}
+                isOperator={isOperator}
+                onNavigate={() => setOpen(false)}
+              />
             </div>
             <div className="mt-6">
-              <UserCard user={user} portal={portal} />
+              <UserCard user={user} />
             </div>
           </div>
         </div>

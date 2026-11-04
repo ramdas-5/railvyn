@@ -10,7 +10,7 @@ import {
   Ticket,
 } from "lucide-react";
 import { getBookingDetail } from "@/lib/domain/reservations";
-import { requireUser } from "@/lib/permissions";
+import { requireUserPage } from "@/lib/page-auth";
 import { formatFullDate, formatTime, msRemaining } from "@/lib/datetime";
 import { formatInr, STATUS_LABELS, TRAVEL_CLASS_LABELS } from "@/lib/utils";
 import { berthedLabel } from "@/lib/labels";
@@ -35,8 +35,8 @@ export default async function BookingDetailPage({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ cancelled?: string }>;
 }) {
-  const user = await requireUser();
   const { id } = await params;
+  const user = await requireUserPage(`/my-bookings/${id}`);
   const query = await searchParams;
   let detail: Awaited<ReturnType<typeof getBookingDetail>>;
   try {

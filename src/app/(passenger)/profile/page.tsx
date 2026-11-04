@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ShieldCheck } from "lucide-react";
-import { requireUser } from "@/lib/permissions";
+import { requireUserPage } from "@/lib/page-auth";
 import { signOutAction } from "@/actions/auth";
 import { Badge, DemoNotice, Panel, PanelHeader } from "@/components/ui/surfaces";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: "Profile & security" };
 export const dynamic = "force-dynamic";
 
 export default async function ProfilePage() {
-  const user = await requireUser();
+  const user = await requireUserPage("/profile");
 
   return (
     <div className="space-y-6">

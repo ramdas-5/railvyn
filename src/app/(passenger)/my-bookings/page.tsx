@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowRight, Ticket, TrainFront } from "lucide-react";
-import { requireUser } from "@/lib/permissions";
+import { requireUserPage } from "@/lib/page-auth";
 import { listUserBookings } from "@/lib/domain/reservations";
 import { formatDate, formatTime, msRemaining } from "@/lib/datetime";
 import { formatInr, STATUS_LABELS, TRAVEL_CLASS_LABELS } from "@/lib/utils";
@@ -13,7 +13,7 @@ export const metadata: Metadata = { title: "My bookings" };
 export const dynamic = "force-dynamic";
 
 export default async function MyBookingsPage() {
-  const user = await requireUser();
+  const user = await requireUserPage("/my-bookings");
   const bookings = await listUserBookings(user.id);
   const upcoming = bookings.filter(
     (booking) =>

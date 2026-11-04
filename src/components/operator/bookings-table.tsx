@@ -18,7 +18,13 @@ import { Badge } from "@/components/ui/surfaces";
 
 const columnHelper = createColumnHelper<OperatorBookingRow>();
 
-export function OperatorBookingsTable({ rows }: { rows: OperatorBookingRow[] }) {
+export function OperatorBookingsTable({
+  rows,
+  caption = "Scoped operator booking registry",
+}: {
+  rows: OperatorBookingRow[];
+  caption?: string;
+}) {
   const [sorting, setSorting] = React.useState<SortingState>([
     { id: "departureAt", desc: true },
   ]);
@@ -114,7 +120,7 @@ export function OperatorBookingsTable({ rows }: { rows: OperatorBookingRow[] }) 
   return (
     <div className="rv-scroll rounded-small border border-line-light">
       <table className="w-full min-w-[62rem] text-left text-xs">
-        <caption className="sr-only">Scoped operator booking registry</caption>
+        <caption className="sr-only">{caption}</caption>
         <thead className="bg-subtle/70 text-[10px] uppercase tracking-[0.07em] text-ink-muted">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>

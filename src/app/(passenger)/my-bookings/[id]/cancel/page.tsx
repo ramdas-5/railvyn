@@ -3,7 +3,7 @@ import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { ArrowLeft, TriangleAlert } from "lucide-react";
 import { getBookingDetail } from "@/lib/domain/reservations";
-import { requireUser } from "@/lib/permissions";
+import { requireUserPage } from "@/lib/page-auth";
 import { formatFullDate, formatTime, msRemaining } from "@/lib/datetime";
 import { formatInr } from "@/lib/utils";
 import { CancelBookingForm } from "@/components/passenger/cancel-form";
@@ -18,8 +18,8 @@ export default async function CancelBookingPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const user = await requireUser();
   const { id } = await params;
+  const user = await requireUserPage(`/my-bookings/${id}/cancel`);
   let detail: Awaited<ReturnType<typeof getBookingDetail>>;
   try {
     detail = await getBookingDetail(id);

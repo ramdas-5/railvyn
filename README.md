@@ -84,6 +84,10 @@ pnpm db:seed        # demo data only
 
 4. Set `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` to the deployment URL (for local development, `http://localhost:3000`).
 
+### One-file SQL setup (Neon SQL Editor)
+
+[`railvyn-neon-setup.sql`](railvyn-neon-setup.sql) in the repository root contains the complete schema (Part 1) followed by the deterministic demo seed (Part 2). Paste and run the whole file once in the Neon SQL Editor on an empty database, then set `NEON_DATABASE_URL`. Part 2 truncates application tables, so only run it on a demo database. The file is about 7.3 MiB; if the SQL editor rejects it, run `psql "$NEON_DATABASE_URL" -f railvyn-neon-setup.sql` instead. Choose either this file or `pnpm db:migrate` — do not apply both to the same database.
+
 Public pages can render without a database, but search, booking, operator and admin features require a configured, migrated database. They fail with an explicit error rather than faking data.
 
 ## Scripts

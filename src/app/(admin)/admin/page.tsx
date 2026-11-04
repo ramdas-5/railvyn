@@ -7,6 +7,7 @@ import {
   IndianRupee,
   ListOrdered,
   ScrollText,
+  TicketCheck,
   TrainFront,
   TriangleAlert,
   Users,
@@ -34,6 +35,7 @@ export const metadata: Metadata = { title: "System overview" };
 export const dynamic = "force-dynamic";
 
 const QUICK_LINKS = [
+  { href: "/admin/bookings", label: "Search the network-wide booking registry", icon: TicketCheck },
   { href: "/admin/network", label: "Add stations and ordered route stops", icon: TrainFront },
   { href: "/admin/runs", label: "Generate dated runs and manage coaches", icon: CalendarClock },
   { href: "/admin/users", label: "Grant roles and operator scopes", icon: Users },

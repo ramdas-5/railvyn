@@ -114,12 +114,12 @@ async function main() {
 
     const failures: string[] = [];
     if (counts.tables < 27) failures.push(`expected 27+ tables, got ${counts.tables}`);
-    if (counts.users !== 6) failures.push(`expected 6 demo users, got ${counts.users}`);
-    if (counts.runs < 30) failures.push(`expected 30+ runs, got ${counts.runs}`);
-    if (counts.seats < 5_000) failures.push(`expected 5000+ run seats, got ${counts.seats}`);
-    if (counts.bookings !== 8) failures.push(`expected 8 demo bookings, got ${counts.bookings}`);
+    if (counts.users !== 12) failures.push(`expected 12 demo users, got ${counts.users}`);
+    if (counts.runs < 300) failures.push(`expected 300+ runs, got ${counts.runs}`);
+    if (counts.seats < 59_700) failures.push(`expected 59700+ run seats, got ${counts.seats}`);
+    if (counts.bookings !== 100) failures.push(`expected 100 demo bookings, got ${counts.bookings}`);
     if (counts.claims <= 0) failures.push("expected confirmed segment claims");
-    if (counts.waitlist < 2) failures.push(`expected 2 waitlist entries, got ${counts.waitlist}`);
+    if (counts.waitlist < 18) failures.push(`expected 18 waitlist entries, got ${counts.waitlist}`);
     if (counts.reusedSeats < 1) failures.push("expected at least one reused physical seat");
     if (counts.overlappingClaims !== 0) {
       failures.push(`found ${counts.overlappingClaims} overlapping claims`);
