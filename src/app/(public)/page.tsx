@@ -9,10 +9,6 @@ import {
   Split,
   Waypoints,
 } from "lucide-react";
-import { getStations } from "@/lib/domain/availability";
-import { addDaysToIsoDate, todayInAppZone } from "@/lib/datetime";
-import { SearchForm } from "@/components/booking/search-form";
-import { DatabaseNotice } from "@/components/database-notice";
 import { Badge, Panel } from "@/components/ui/surfaces";
 import { TRAVEL_CLASS_LABELS } from "@/lib/utils";
 
@@ -72,18 +68,7 @@ function ReuseDiagram() {
   );
 }
 
-export default async function LandingPage() {
-  let stations: Awaited<ReturnType<typeof getStations>> = [];
-  let dbError = false;
-  try {
-    stations = await getStations();
-  } catch {
-    dbError = true;
-  }
-  const ndls = stations.find((station) => station.code === "NDLS");
-  const hwh = stations.find((station) => station.code === "HWH");
-  const tomorrow = addDaysToIsoDate(todayInAppZone(), 1);
-
+export default function LandingPage() {
   return (
     <>
       <section className="relative overflow-hidden border-b border-line">
@@ -142,29 +127,6 @@ export default async function LandingPage() {
             </dl>
           </div>
           <div>
-            <div className="rv-feature p-5 sm:p-6">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
-                Live availability search
-              </p>
-              {stations.length > 0 ? (
-                <div className="mt-4">
-                  <SearchForm
-                    stations={stations}
-                    defaults={{
-                      from: ndls?.id,
-                      to: hwh?.id,
-                      date: tomorrow,
-                      passengers: "1",
-                      travelClass: "any",
-                    }}
-                  />
-                </div>
-              ) : (
-                <div className="mt-4">
-                  <DatabaseNotice />
-                </div>
-              )}
-            </div>
             <ReuseDiagram />
           </div>
         </div>

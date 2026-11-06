@@ -25,6 +25,11 @@ const HEADER = `-- =============================================================
 -- PART 1 — schema: enums, tables, foreign keys, indexes, constraints
 -- PART 2 — deterministic demo data: 63 stations, 16 routes, 30 trains,
 --          300 runs, 59,700 seats, 100 bookings, waitlist + audit samples
+-- PART 3 — bulk generated data: 1,000+ stations, 1,420 trains/routes,
+--          9,940 dated runs (daily for the next 7 days), 19,880 coaches,
+--          1,351,840 seats plus a dense all-pairs network that connects every
+--          station pair, 1,200 bookings, 1,200 waitlist requests, 1,000
+--          disruptions and 1,200 audit rows (no duplicate rows)
 --
 -- Demo accounts (password for every seeded account: RailvynDemo#2026)
 --   passenger@railvyn.demo    priya@railvyn.demo     kabir@railvyn.demo
@@ -47,6 +52,7 @@ const HEADER = `-- =============================================================
 
 const schema = readFileSync("db/fullschema.sql", "utf8").trim();
 const seed = readFileSync("db/seed.sql", "utf8").trim();
+const bulk = readFileSync("db/bulk-seed.sql", "utf8").trim();
 
 const output = `${HEADER}
 -- ===========================================================================
@@ -60,6 +66,12 @@ ${schema}
 -- ===========================================================================
 
 ${seed}
+
+-- ===========================================================================
+-- PART 3 — BULK GENERATED DATA
+-- ===========================================================================
+
+${bulk}
 `;
 
 writeFileSync("railvyn-neon-setup.sql", output, "utf8");

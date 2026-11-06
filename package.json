@@ -20,6 +20,8 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
+    "db:seed:bulk": "tsx scripts/seed-bulk.ts",
+    "db:seed:large": "tsx scripts/seed.ts && tsx scripts/seed-bulk.ts",
     "db:setup": "pnpm db:migrate && pnpm db:seed",
     "db:sql:export": "tsx scripts/export-seed-sql.ts",
     "db:sql:bundle": "tsx scripts/build-neon-setup.ts",
