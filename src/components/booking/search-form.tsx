@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeftRight, CalendarDays, Search, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input, Label, Select } from "@/components/ui/field";
+import { Input, Select } from "@/components/ui/field";
 import { TRAVEL_CLASS_LABELS } from "@/lib/utils";
 
 export type StationOption = { id: string; code: string; name: string; city: string };
@@ -42,7 +42,7 @@ export function SearchForm({
           Segment-accurate availability · demo fares
         </p>
       </div>
-      <div className="mt-4 grid gap-3 md:grid-cols-[1fr_1fr_auto_1fr]">
+      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_8.5rem_15rem]">
         <div>
           <label htmlFor="from" className={labelClass}>
             <span className="inline-flex items-center gap-1.5">
@@ -93,7 +93,7 @@ export function SearchForm({
             required
             defaultValue={defaults?.date}
             variant={fieldVariant}
-            className="md:w-[10.5rem]"
+            className="w-full"
           />
         </div>
         <div className="grid grid-cols-2 gap-3">
