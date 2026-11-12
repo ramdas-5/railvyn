@@ -1,6 +1,6 @@
 # RAILVYN
 
-**Every journey. Precisely placed.--**
+**--Every journey. Precisely placed.--**
 
 A database-first railway coach and **journey-aware seat allocation** system. RAILVYN sells a berth for exactly the leg you travel, releases it the moment you alight, and protects every allocation with PostgreSQL segment claims — so the same physical seat can be sold twice in one day, but never twice on the same stretch of track.
 
