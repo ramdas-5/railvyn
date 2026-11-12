@@ -163,9 +163,11 @@ Coverage includes overlapping versus adjacent non-overlapping legs, hold/confirm
 
 ## Deployment (Vercel)
 
-1. Create the Neon project and run `pnpm db:migrate` against it (locally or in CI) before the first deployment.
-2. Import the repository into Vercel; the Next.js preset is sufficient. Database and auth routes must use the Node.js runtime (the defaults for these route handlers).
-3. Set `NEON_DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` and `NEXT_PUBLIC_APP_URL` in the Vercel project. Use the pooled Neon host.
+The full step-by-step guide — Neon project setup, env vars, import settings, custom domains, preview caveats and troubleshooting — is in [`DEPLOYMENT.md`](DEPLOYMENT.md). Short version:
+
+1. Create the Neon project and run `pnpm db:migrate` (then optionally `pnpm db:seed`) against it before the first deployment. Alternatively run the one-file `railvyn-neon-setup.sql` in the Neon SQL Editor — never both.
+2. Import the repository into Vercel; the Next.js preset is sufficient (root directory `/`, build `pnpm build`). Database and auth routes must use the Node.js runtime (the defaults for these route handlers).
+3. Set `NEON_DATABASE_URL` (pooled host), `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (the exact `https://` production domain) and `NEXT_PUBLIC_APP_URL` in the Vercel project. A wrong or missing `BETTER_AUTH_URL` breaks sign-in because production cookies are HTTPS-only.
 4. Optionally run `pnpm db:seed` once against a demonstration database. Never seed a database with data you need to keep.
 5. Do not rely on Vercel Hobby cron for hold expiry. Expiry is lazy and transactional; a scheduled cleanup job is an optional optimization only.
 
