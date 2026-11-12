@@ -6,13 +6,35 @@ packages:
 minimumReleaseAge: 0
 
 # pnpm 10+/12: dependency lifecycle scripts are blocked unless allowed here.
+# `embedded-postgres` ships one package per platform, and pnpm installs only the
+# one matching the current OS/arch. CI (Vercel = linux-x64) and local Windows
+# development therefore need every variant allow-listed, otherwise a fresh
+# install fails with ERR_PNPM_IGNORED_BUILDS for the platform package it picked.
+# The only script involved is `hydrate-symlinks.js`; it never runs at runtime or
+# during `next build`.
 allowBuilds:
   '@embedded-postgres/windows-x64': true
+  '@embedded-postgres/linux-x64': true
+  '@embedded-postgres/linux-arm64': true
+  '@embedded-postgres/linux-arm': true
+  '@embedded-postgres/linux-ia32': true
+  '@embedded-postgres/linux-ppc64': true
+  '@embedded-postgres/darwin-x64': true
+  '@embedded-postgres/darwin-arm64': true
   embedded-postgres: true
   esbuild: true
+  sharp: true
+  unrs-resolver: true
 
 onlyBuiltDependencies:
   - "@embedded-postgres/windows-x64"
+  - "@embedded-postgres/linux-x64"
+  - "@embedded-postgres/linux-arm64"
+  - "@embedded-postgres/linux-arm"
+  - "@embedded-postgres/linux-ia32"
+  - "@embedded-postgres/linux-ppc64"
+  - "@embedded-postgres/darwin-x64"
+  - "@embedded-postgres/darwin-arm64"
   - embedded-postgres
   - esbuild
   - sharp

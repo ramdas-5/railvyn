@@ -260,6 +260,7 @@ Options:
 | `relation "bookings" does not exist` | Schema never applied | `pnpm db:migrate` against Neon (step 1a) |
 | `too many connections` / intermittent 500s under load | Using the direct host instead of the pooler | Use the `-pooler` connection string |
 | `password authentication failed` | Truncated connection string | Recopy from Neon → Connect → pooled |
+| `ERR_PNPM_IGNORED_BUILDS: Ignored build scripts: @embedded-postgres/linux-x64@…` | pnpm blocks lifecycle scripts unless the package is allow-listed; Vercel installs the **linux-x64** variant while local Windows installs `windows-x64` | Already fixed in `pnpm-workspace.yaml`: every `@embedded-postgres/*` platform variant is listed under `allowBuilds` and `onlyBuiltDependencies`. Commit and redeploy. If you add another native dev dependency, allow-list its build script the same way |
 | Build fails at `pnpm install` | Vercel could not resolve `pnpm@12.16.1` | Set Install Command to `pnpm install --frozen-lockfile`, or align `packageManager` with a Vercel-supported pnpm major |
 | Build fails on TypeScript | Local `pnpm typecheck` would fail too | Fix locally, commit, push |
 | Pages load but every number is 0 / lists empty | Database migrated but not seeded | `pnpm db:seed` (destructive — demo data only) |
